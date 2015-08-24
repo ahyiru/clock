@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>clock</title>
+	<style>
+		*{margin:0;padding:0;}
+		body{width:100%;min-height:100%;}
+		.h{
+			margin:50px auto;
+			background:#eee;
+			height:500px;
+			width:500px;
+			border-radius:250px;
+			box-shadow:inset 0 0 5px #aaa;
+			position:relative;
+		}
+		em{
+			display:block;
+			width:2px;
+			height:6px;
+			background:#999;
+			position:absolute;
+			left:0;
+			top:0;
+			transform-origin:50% 0;
+			margin-left:-1px;
+		}
+		.hh{
+			width:5px;
+			height:12px;
+			margin-left:-3px;
+			background:#333;
+		}
+		em i{
+			font-size:25px;
+			color:#000;
+			position:absolute;
+			top:13px;
+			left:-7px;
+			text-shadow:1px 1px #fff;
+		}
+		.hour{
+			position:absolute;
+			z-index:3;
+			top:50%;
+			left:50%;
+			width:160px;
+			height:6px;
+			border-radius:5px;
+			background:#f60;
+			transform-origin:10px 50%;
+			margin:-3px 0 0 -10px;
+		}
+		.mins{
+			position:absolute;
+			z-index:4;
+			top:50%;
+			left:50%;
+			width:190px;
+			height:4px;
+			border-radius:5px;
+			background:#60f;
+			transform-origin:10px 50%;
+			margin:-3px 0 0 -10px;
+		}
+		.secs{
+			position:absolute;
+			z-index:5;
+			top:50%;
+			left:50%;
+			width:220px;
+			height:2px;
+			border-radius:5px;
+			background:#6f0;
+			transform-origin:30px 50%;
+			margin:-3px 0 0 -30px;
+		}
+	</style>
+</head>
+<body>
+<div class="h">
+<div class="em"></div>
+<div class="hour"></div>
+<div class="mins"></div>
+<div class="secs"></div>
+</div>
+
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script>
+	$(function(){
+		var getpos=function(dep){
+			var h=(2*Math.PI/360)*6*dep,r=250;
+			return{
+				x:~~(r+Math.sin(h)*r),
+				y:~~(r-Math.cos(h)*r)
+			}
+		}
+		for(var i=1;i<61;i++){
+			var pos=getpos(i);
+			$('.em').append('<em></em>');
+
+			if(i%5==0){
+				$('em').eq(i-1).addClass('hh');
+				$('em').eq(i-1).append('<i style="transform:rotate('+(-6*i)+'deg)">'+i/5+'</i>')
+			}
+
+			$('em').eq(i-1).css({'left':pos.x,'top':pos.y,'transform':'rotate('+i*6+'deg)'});
+		}
+
+		//
+		var n=new Date(),
+			y=n.getFullYear(),mm=n.getMonth(),w=n.getDay(),d=n.getDate(),h=n.getHours(),m=n.getMinutes(),s=n.getSeconds();
+		var mytime=function(){
+			var dep=0;
+			s++;
+			if(s>59){s=0;m++;}
+			if(m>59){m=0;h++;}
+			if(h>12){h=h-12;}
+			dep=(~~(m/12))*6;
+			$('.hour').css('transform','rotate('+(h*30-90+dep)+'deg)');
+			$('.mins').css('transform','rotate('+(m*6-90)+'deg)');
+			$('.secs').css('transform','rotate('+(s*6-90)+'deg)');
+		};
+		mytime();
+		setInterval(mytime,1000);
+	})
+</script>
+</body>
+</html>
